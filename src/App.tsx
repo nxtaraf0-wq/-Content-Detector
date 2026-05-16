@@ -176,8 +176,15 @@ export default function App() {
       });
 
       if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || 'Failed to analyze content.');
+        let errorMessage = 'Failed to analyze content.';
+        try {
+          const errData = await response.json();
+          errorMessage = errData.error || errorMessage;
+        } catch (e) {
+          const textError = await response.text();
+          errorMessage = textError.substring(0, 100) || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
       const data: DetectionResult = await response.json();
