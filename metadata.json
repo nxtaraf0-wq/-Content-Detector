@@ -1,0 +1,8 @@
+{
+  "name": "AI Content Detector",
+  "description": "Analyze text, images, and audio to detect AI-generated content and receive a detailed confidence score.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
