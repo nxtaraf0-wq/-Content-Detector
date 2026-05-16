@@ -178,16 +178,27 @@ export default function App() {
       if (!response.ok) {
         let errorMessage = 'Failed to analyze content.';
         try {
-          const errData = await response.json();
-          errorMessage = errData.error || errorMessage;
-        } catch (e) {
           const textError = await response.text();
-          errorMessage = textError.substring(0, 100) || errorMessage;
+          try {
+            const errData = JSON.parse(textError);
+            errorMessage = errData.error || errorMessage;
+          } catch {
+            errorMessage = textError.substring(0, 100) || errorMessage;
+          }
+        } catch (e) {
+          // Fallback if reading text fails
         }
         throw new Error(errorMessage);
       }
 
-      const data: DetectionResult = await response.json();
+      const responseText = await response.text();
+      let data: DetectionResult;
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        throw new Error("Invalid response from server: " + responseText.substring(0, 50));
+      }
+
       setResult(data);
 
       const newRecord: AnalysisRecord = {
